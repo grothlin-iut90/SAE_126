@@ -3,6 +3,7 @@ package model;
 import boardifier.control.ActionFactory;
 import boardifier.model.*;
 import boardifier.model.action.ActionList;
+import view.PlayerCardHandLook;
 
 public class RDRStageModel extends GameStageModel{
 
@@ -16,8 +17,18 @@ public class RDRStageModel extends GameStageModel{
     private RDRPawnPot redPot;
     private Pawn[] bluePawns;
     private Pawn[] redPawns;
+    private Card[] PlayerCards1;
+    private Card[] PlayerCards2;
+
+    private int numberOfCard;
+    private CardDeck cardDeck;
+    private PlayerCardHand player1CardHand;
+    private PlayerCardHand player2CardHand;
+
     private Pawn kingPawn;
-    private TextElement playerName;
+    private TextElement player1Name;
+    private TextElement player2Name;
+    private TextElement textDeck;
     // Uncomment next line if the example with a main container is used. see end of HoleStageFactory and HoleStageView
     //private ContainerElement mainContainer;
 
@@ -25,6 +36,7 @@ public class RDRStageModel extends GameStageModel{
         super(name, model);
         bluePawnsToPlay = 26;
         redPawnsToPlay = 26;
+        numberOfCard = 5;
         setupCallbacks();
     }
 
@@ -47,6 +59,18 @@ public class RDRStageModel extends GameStageModel{
         this.board = board;
         addContainer(board);
     }
+    public int getBluePawnsToPlay() {
+        return bluePawnsToPlay;
+    }
+    public void reduceBluePawnToPlay(){
+        bluePawnsToPlay--;
+    }
+    public int getRedPawnsToPlay(){
+        return redPawnsToPlay;
+    }
+    public void reduceRedPawnToPlay(){
+        redPawnsToPlay--;
+    }
 
     public ContainerElement getContainer(GameElement element) {
         for (ContainerElement container : getContainers()) {
@@ -57,11 +81,61 @@ public class RDRStageModel extends GameStageModel{
         return null;
     }
 
+    public int getNumberOfCard(){
+        return numberOfCard;
+    }
+
+    public CardDeck getCardDeck(){
+        return cardDeck;
+    }
+    public void setCardDeck(CardDeck cardDeck){
+        this.cardDeck = cardDeck;
+        addContainer(cardDeck);
+    }
+
+    public PlayerCardHand getPlayerCardHand(int idPlayer){
+        if(idPlayer == 0) {
+            return player1CardHand;
+        }
+        return player2CardHand;
+    }
+    public void setPlayerCardHand(PlayerCardHand playerCardHand, int idPlayer){
+        if(idPlayer == 0){
+            this.player1CardHand = playerCardHand;
+            addContainer(playerCardHand);
+        }
+        else{
+            this.player2CardHand = playerCardHand;
+            addContainer(playerCardHand);
+        }
+    }
+
+    public Card[] getCards(int idPlayer){
+        if(idPlayer == 0) {
+            return PlayerCards1;
+        }
+        return PlayerCards2;
+    }
+
+    public void setPlayerCards(Card[] PlayerCards, int idPlayer){
+        if(idPlayer == 0) {
+            this.PlayerCards1 = PlayerCards;
+            for (int i = 0; i < PlayerCards.length; i++) {
+                addElement(PlayerCards[i]);
+            }
+        }
+        else{
+            this.PlayerCards2 = PlayerCards;
+            for (int i = 0; i < PlayerCards.length; i++) {
+                addElement(PlayerCards[i]);
+            }
+        }
+    }
+
     public RDRPawnPot getBluePot() {
         return bluePot;
     }
     public void setBluePot(RDRPawnPot bluePot) {
-
         this.bluePot = bluePot;
         addContainer(bluePot);
     }
@@ -77,25 +151,21 @@ public class RDRStageModel extends GameStageModel{
     public Pawn[] getBluePawns() {
         return bluePawns;
     }
-
-    public int getBluePawnsRemaining() {
-        return bluePawns.length;
-    }
-
-
     public void setBluePawns(Pawn[] bluePawns) {
         this.bluePawns = bluePawns;
         for(int i=0;i<bluePawns.length;i++) {
             addElement(bluePawns[i]);
         }
     }
-
     public Pawn[] getRedPawns() {
         return redPawns;
     }
 
     public int getRedPawnsRemaining(){
-        return redPawns.length;
+        return redPawnsToPlay;
+    }
+    public int getBluePawnsRemaining(){
+        return bluePawnsToPlay;
     }
     public void setRedPawns(Pawn[] redPawns) {
         this.redPawns = redPawns;
@@ -112,12 +182,21 @@ public class RDRStageModel extends GameStageModel{
         addElement(kingPawn);
     }
 
-    public TextElement getPlayerName() {
-        return playerName;
+    public TextElement getPlayerName(int idPlayer) {
+        if(idPlayer == 0) {
+            return player1Name;
+        }
+        return player2Name;
     }
-    public void setPlayerName(TextElement playerName) {
-        this.playerName = playerName;
-        addElement(playerName);
+    public void setPlayerName(TextElement playerName, int idPlayer) {
+        if(idPlayer == 0) {
+            this.player1Name = playerName;
+            addElement(playerName);
+        }
+        else{
+            this.player2Name = playerName;
+            addElement(playerName);
+        }
     }
 
     private void setupCallbacks() {
@@ -208,5 +287,13 @@ public class RDRStageModel extends GameStageModel{
     @Override
     public StageElementsFactory getDefaultElementFactory() {
         return new RDRStageFactory(this);
+    }
+
+    public TextElement getTextDeck() {
+        return textDeck;
+    }
+
+    public void setTextDeck(TextElement textDeck) {
+        this.textDeck = textDeck;
     }
 }

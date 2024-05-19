@@ -5,6 +5,7 @@ import boardifier.model.ContainerElement;
 import boardifier.model.GameStageModel;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RDRBoard extends ContainerElement {
@@ -25,5 +26,99 @@ public class RDRBoard extends ContainerElement {
         }
     }
     */
+
+    public List<Point> computeValidCells(int number) {
+        List<Point> lst = new ArrayList<>();
+        Pawn p = null;
+        // if the grid is empty, is it the first turn and thus, all cells are valid
+        if (isEmpty()) {
+            // i are rows
+            for(int i=0;i<8;i++) {
+                // j are cols
+                for (int j = 0; j < 8; j++) {
+                    // cols is in x direction and rows are in y direction, so create a point in (j,i)
+                    lst.add(new Point(j,i));
+                }
+            }
+            return lst;
+        }
+        // else, take each empty cell and check if it is valid
+        for(int i=0;i<8;i++) {
+            for(int j=0;j<8;j++) {
+                if (isEmptyAt(i,j)) {
+                    // check adjacence in row-1
+                    if (i-1 >= 0) {
+                        if (j-1>=0) {
+                            p = (Pawn)getElement(i-1,j-1);
+
+                            // check if same parity
+                            if ((p != null) && ( p.getNumber()%2 == number%2)) {
+                                lst.add(new Point(j,i));
+                                continue; // go to the next point
+                            }
+                        }
+                        p = (Pawn)getElement(i-1,j);
+                        // check if different parity
+                        if ((p != null) && ( p.getNumber()%2 != number%2)) {
+                            lst.add(new Point(j,i));
+                            continue; // go to the next point
+                        }
+                        if (j+1<=2) {
+                            p = (Pawn)getElement(i-1,j+1);
+                            // check if same parity
+                            if ((p != null) && ( p.getNumber()%2 == number%2)) {
+                                lst.add(new Point(j,i));
+                                continue; // go to the next point
+                            }
+                        }
+                    }
+                    // check adjacence in row+1
+                    if (i+1 <= 2) {
+                        if (j-1>=0) {
+                            p = (Pawn)getElement(i+1,j-1);
+                            // check if same parity
+                            if ((p != null) && ( p.getNumber()%2 == number%2)) {
+                                lst.add(new Point(j,i));
+                                continue; // go to the next point
+                            }
+                        }
+                        p = (Pawn)getElement(i+1,j);
+                        // check if different parity
+                        if ((p != null) && ( p.getNumber()%2 != number%2)) {
+                            lst.add(new Point(j,i));
+                            continue; // go to the next point
+                        }
+                        if (j+1<=2) {
+                            p = (Pawn)getElement(i+1,j+1);
+                            // check if same parity
+                            if ((p != null) && ( p.getNumber()%2 == number%2)) {
+                                lst.add(new Point(j,i));
+                                continue; // go to the next point
+                            }
+                        }
+                    }
+                    // check adjacence in row
+                    if (j-1>=0) {
+                        p = (Pawn)getElement(i,j-1);
+                        // check if different parity
+                        if ((p != null) && ( p.getNumber()%2 != number%2)) {
+                            lst.add(new Point(j,i));
+                            continue; // go to the next point
+                        }
+                    }
+                    if (j+1<=2) {
+                        p = (Pawn)getElement(i,j+1);
+                        // check if different parity
+                        if ((p != null) && ( p.getNumber()%2 != number%2)) {
+                            lst.add(new Point(j,i));
+                            continue; // go to the next point
+                        }
+
+                    }
+                }
+            }
+        }
+        return lst;
+    }
 
 }

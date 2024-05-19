@@ -1,19 +1,12 @@
 package view;
 
-import boardifier.control.ActionFactory;
-import boardifier.control.ActionPlayer;
 import boardifier.model.GameStageModel;
-import boardifier.model.action.ActionList;
 import boardifier.view.GameStageView;
 import boardifier.control.Logger;
 import boardifier.view.ClassicBoardLook;
-import boardifier.view.ContainerLook;
 
 import boardifier.view.TextLook;
-import model.Pawn;
 import model.RDRStageModel;
-
-import java.io.Console;
 
 public class RDRStageView extends GameStageView {
     public RDRStageView(String name, GameStageModel gameStageModel) {
@@ -22,7 +15,9 @@ public class RDRStageView extends GameStageView {
 
     public void createLooks(){
         RDRStageModel model = (RDRStageModel)gameStageModel;
-        addLook(new TextLook(model.getPlayerName()));
+        addLook(new TextLook(model.getPlayerName(0)));
+        addLook(new TextLook(model.getPlayerName(1)));
+
         // create a ClassicBoardLook (with borders and coordinates) for the main board.
         addLook(new ClassicBoardLook(2, 4, model.getBoard(), 1, 1, true));
 
@@ -36,9 +31,18 @@ public class RDRStageView extends GameStageView {
             addLook(new PawnLook(model.getBluePawns()[i]));
             addLook(new PawnLook(model.getRedPawns()[i]));
         }
+        // create look for CardDeck
+        addLook(new CardDeckLook(model.getCardDeck()));
 
+        addLook(new PlayerCardHandLook(model.getPlayerCardHand(0)));
+        addLook(new PlayerCardHandLook(model.getPlayerCardHand(1)));
 
-        /* need to show the (color) number of pawn remaining in the lot, already done but in system.out.print need to be done with real view
+        for (int i = 0; i < 5; i++){
+            addLook(new CardLook(model.getCards(0)[i]));
+            addLook(new CardLook(model.getCards(1)[i]));
+        }
+
+        /*
         addLook(new TextLook(model.getBluePawnsRemaining()));
         System.out.println("nbr bleu:"+ model.getBluePawnsRemaining());
         System.out.println("nbr rouge:"+ model.getRedPawnsRemaining());

@@ -1,4 +1,3 @@
-/*
 package control;
 
 import boardifier.control.ActionFactory;
@@ -35,13 +34,13 @@ public class RDRDecider extends Decider {
         int colDest = 0; // the dest. col in board
 
         if (model.getIdPlayer() == Pawn.PAWN_BLUE) {
-            pot = stage.getBlackPot();
+            pot = stage.getBluePot();
         }
         else {
             pot = stage.getRedPot();
         }
 
-        for(int i=0;i<4;i++) {
+        for(int i=0;i<26;i++) {
             Pawn p = (Pawn)pot.getElement(i,0);
             // if there is a pawn in i.
             if (p != null) {
@@ -64,4 +63,3 @@ public class RDRDecider extends Decider {
         return actions;
     }
 }
-*/
