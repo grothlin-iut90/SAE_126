@@ -18,12 +18,12 @@ public class RDRStageFactory extends StageElementsFactory{
         // create the text that displays the player 1 name and put it in 0,0 in the virtual space
         TextElement textPlayer1 = new TextElement("player1", stageModel);
         textPlayer1.setLocation(0,0);
-        stageModel.setPlayerName(textPlayer1, 1);
+        stageModel.setPlayerName(textPlayer1, 0);
 
         // create the text that displays the player 2 name and put it in 0,0 in the virtual space
         TextElement textPlayer2 = new TextElement("player2", stageModel);
         textPlayer2.setLocation(0,25);
-        stageModel.setPlayerName(textPlayer2, 2);
+        stageModel.setPlayerName(textPlayer2, 1);
 
         // create the board, in 0,5 in the virtual space
         RDRBoard board = new RDRBoard(0, 5, stageModel);
@@ -51,10 +51,10 @@ public class RDRStageFactory extends StageElementsFactory{
         //Create the players card hand
         //Player 1 hand
         PlayerCardHand player1CardHand = new PlayerCardHand(1, 1, stageModel);
-        stageModel.setPlayerCardHand(player1CardHand, 1);
+        stageModel.setPlayerCardHand(player1CardHand, 0);
         //Player 2 hand
         PlayerCardHand player2CardHand = new PlayerCardHand(1, 26, stageModel);
-        stageModel.setPlayerCardHand(player2CardHand, 2);
+        stageModel.setPlayerCardHand(player2CardHand, 1);
 
         Card[] PlayerCards1 = new Card[5];
         Card[] PlayerCards2 = new Card[5];
@@ -62,8 +62,8 @@ public class RDRStageFactory extends StageElementsFactory{
             PlayerCards1[i] = new Card(i,i%3+1,stageModel);
             PlayerCards2[i] = new Card(i,i%3+1,stageModel);
         }
-        stageModel.setPlayerCards(PlayerCards1, 1);
-        stageModel.setPlayerCards(PlayerCards2, 2);
+        stageModel.setPlayerCards(PlayerCards1, 0);
+        stageModel.setPlayerCards(PlayerCards2, 1);
         for (int i = 0; i < 5; i++){
             player1CardHand.addElement(PlayerCards1[i], 0, i);
             player2CardHand.addElement(PlayerCards2[i], 0, i);

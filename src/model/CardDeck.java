@@ -5,11 +5,10 @@ import boardifier.model.ContainerElement;
 import boardifier.model.GameStageModel;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class CardDeck extends ContainerElement {
 
-    private List<Card> cards; // Liste des cartes dans le deck
+    private ArrayList<Card> cards; // Liste des cartes dans le deck
 
     public CardDeck(int x, int y, GameStageModel gameStageModel){
         super("cardDeck", x, y, 1, 1, gameStageModel);
@@ -30,6 +29,10 @@ public class CardDeck extends ContainerElement {
         } else {
             throw new IllegalStateException("No more cards available");
         }
+    }
+
+    public int getNumberCardsLeft(){
+        return cards.toArray().length;
     }
 
 }

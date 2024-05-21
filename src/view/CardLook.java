@@ -73,6 +73,5 @@ public class CardLook extends ElementLook{
                 shape[1][1] = ConsoleColor.WHITE + "?" + ConsoleColor.RESET;
                 break;
         }
-
     }
 }

@@ -39,7 +39,6 @@ public class RDRController extends Controller {
          */
         //use update() to update all the changes and also in the view
         update();
-
         while(! model.isEndStage()) {
             playTurn();
             endOfTurn();
@@ -196,7 +195,7 @@ public class RDRController extends Controller {
         playerHand.removeCardFromPlayerHand(cardToPlay);
         System.out.println("Card removed from hand.");
         for (int i = 0; i < 5; i++) {
-            System.out.println(gameStage.getCards(2)[i]);
+            System.out.println(gameStage.getCards(model.getIdPlayer())[i]);
         }
     }
     public boolean useHeroCard(int idPlayer, String direction, int move) {

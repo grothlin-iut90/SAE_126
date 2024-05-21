@@ -23,6 +23,7 @@ public class RDRStageModel extends GameStageModel{
     private HeroCard[] PlayerHeroCards2;
     private int numberOfCard;
     private CardDeck cardDeck;
+    private Card cardBack;
     private HeroCard[] heroCard;
     private PlayerCardHand player1CardHand;
     private PlayerCardHand player2CardHand;
@@ -99,13 +100,13 @@ public class RDRStageModel extends GameStageModel{
         addContainer(cardDeck);
     }
     public PlayerCardHand getPlayerCardHand(int idPlayer){
-        if(idPlayer==1) {
+        if(idPlayer == 0) {
             return player1CardHand;
         }
         return player2CardHand;
     }
     public void setPlayerCardHand(PlayerCardHand playerCardHand, int idPlayer){
-        if(idPlayer == 1){
+        if(idPlayer == 0){
             this.player1CardHand = playerCardHand;
             addContainer(playerCardHand);
         }
@@ -115,13 +116,13 @@ public class RDRStageModel extends GameStageModel{
         }
     }
     public Card[] getCards(int idPlayer){
-        if(idPlayer==1) {
+        if(idPlayer == 0) {
             return PlayerCards1;
         }
         return PlayerCards2;
     }
     public void setPlayerCards(Card[] PlayerCards, int idPlayer){
-        if(idPlayer==1) {
+        if(idPlayer == 0) {
             this.PlayerCards1 = PlayerCards;
             for (int i = 0; i < PlayerCards.length; i++) {
                 addElement(PlayerCards[i]);
@@ -241,13 +242,13 @@ public class RDRStageModel extends GameStageModel{
         }
     }
     public TextElement getPlayerName(int idPlayer) {
-        if(idPlayer == 1) {
+        if(idPlayer == 0) {
             return player1Name;
         }
         return player2Name;
     }
     public void setPlayerName(TextElement playerName, int idPlayer) {
-        if(idPlayer == 1) {
+        if(idPlayer == 0) {
             this.player1Name = playerName;
             addElement(playerName);
         }
@@ -344,5 +345,13 @@ public class RDRStageModel extends GameStageModel{
     @Override
     public StageElementsFactory getDefaultElementFactory() {
         return new RDRStageFactory(this);
+    }
+
+    public Card getCardBack() {
+        return cardBack;
+    }
+
+    public void setCardBack(Card cardBack) {
+        this.cardBack = cardBack;
     }
 }

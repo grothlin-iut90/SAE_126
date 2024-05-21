@@ -18,12 +18,12 @@ public class RDRStageFactory extends StageElementsFactory{
         // create the text that displays the player 1 name and put it in 0,0 in the virtual space
         TextElement textPlayer1 = new TextElement("player1", stageModel);
         textPlayer1.setLocation(0,0);
-        stageModel.setPlayerName(textPlayer1, 1);
+        stageModel.setPlayerName(textPlayer1, 0);
 
         // create the text that displays the player 2 name and put it in 0,0 in the virtual space
         TextElement textPlayer2 = new TextElement("player2", stageModel);
         textPlayer2.setLocation(0,25);
-        stageModel.setPlayerName(textPlayer2, 2);
+        stageModel.setPlayerName(textPlayer2, 1);
 
         // create the board, in 0,5 in the virtual space
         RDRBoard board = new RDRBoard(0, 5, stageModel);
@@ -44,17 +44,23 @@ public class RDRStageFactory extends StageElementsFactory{
         RDRPawnPot redPot = new RDRPawnPot(40,6, stageModel);
         // assign the red pot to the game stage model
         stageModel.setRedPot(redPot);
-        // create the CardDeck
+
+        //Card deck
         CardDeck cardDeck = new CardDeck(40, 22, stageModel);
         stageModel.setCardDeck(cardDeck);
+
+        Card cardBack = new Card(7, 4, stageModel);
+
+        stageModel.setCardBack(cardBack);
+        cardDeck.addElement(cardBack, 0, 0);
 
         //Create the players card hand
         //Player 1 hand
         PlayerCardHand player1CardHand = new PlayerCardHand(1, 1, stageModel);
-        stageModel.setPlayerCardHand(player1CardHand, 1);
+        stageModel.setPlayerCardHand(player1CardHand, 0);
         //Player 2 hand
         PlayerCardHand player2CardHand = new PlayerCardHand(1, 26, stageModel);
-        stageModel.setPlayerCardHand(player2CardHand, 2);
+        stageModel.setPlayerCardHand(player2CardHand, 1);
 
         Card[] PlayerCards1 = new Card[5];
         Card[] PlayerCards2 = new Card[5];
@@ -62,8 +68,9 @@ public class RDRStageFactory extends StageElementsFactory{
             PlayerCards1[i] = cardDeck.drawCard();
             PlayerCards2[i] = cardDeck.drawCard();
         }
-        stageModel.setPlayerCards(PlayerCards1, 1);
-        stageModel.setPlayerCards(PlayerCards2, 2);
+        stageModel.setPlayerCards(PlayerCards1, 0);
+        stageModel.setPlayerCards(PlayerCards2, 1);
+
         for (int i = 0; i < 5; i++){
             player1CardHand.addElement(PlayerCards1[i], 0, i);
             player2CardHand.addElement(PlayerCards2[i], 0, i);
