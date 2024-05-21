@@ -23,7 +23,6 @@ public class RDRStageModel extends GameStageModel{
     private HeroCard[] PlayerHeroCards2;
     private int numberOfCard;
     private CardDeck cardDeck;
-    private Card cardBack;
     private HeroCard[] heroCard;
     private PlayerCardHand player1CardHand;
     private PlayerCardHand player2CardHand;
@@ -345,13 +344,5 @@ public class RDRStageModel extends GameStageModel{
     @Override
     public StageElementsFactory getDefaultElementFactory() {
         return new RDRStageFactory(this);
-    }
-
-    public Card getCardBack() {
-        return cardBack;
-    }
-
-    public void setCardBack(Card cardBack) {
-        this.cardBack = cardBack;
     }
 }

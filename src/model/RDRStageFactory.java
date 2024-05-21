@@ -49,11 +49,6 @@ public class RDRStageFactory extends StageElementsFactory{
         CardDeck cardDeck = new CardDeck(40, 22, stageModel);
         stageModel.setCardDeck(cardDeck);
 
-        Card cardBack = new Card(7, 4, stageModel);
-
-        stageModel.setCardBack(cardBack);
-        cardDeck.addElement(cardBack, 0, 0);
-
         //Create the players card hand
         //Player 1 hand
         PlayerCardHand player1CardHand = new PlayerCardHand(1, 1, stageModel);

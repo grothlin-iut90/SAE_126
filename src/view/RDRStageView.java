@@ -41,7 +41,6 @@ public class RDRStageView extends GameStageView {
 
         // create look for CardDeck
         addLook(new CardDeckLook(model.getCardDeck()));
-        addLook(new CardBackLook(model.getCardBack()));
 
         addLook(new PlayerCardHandLook(model.getPlayerCardHand(0)));
         addLook(new PlayerCardHandLook(model.getPlayerCardHand(1)));
