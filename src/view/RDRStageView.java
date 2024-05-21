@@ -24,7 +24,6 @@ public class RDRStageView extends GameStageView {
         addLook(new ClassicBoardLook(2, 4, model.getBoard(), 1, 1, true));
 
 
-
         // create looks for both pots
         addLook(new BluePawnPotLook(model.getBluePot()));
         addLook(new RedPawnPotLook(model.getRedPot()));

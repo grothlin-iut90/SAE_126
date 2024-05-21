@@ -35,9 +35,10 @@ public class RDRController extends Controller {
         consoleIn = new BufferedReader(new InputStreamReader(System.in));
         numberTurnPlayed = 0;
         //used to test useHeroCard
-
+        /*
         initializeRedPawn();
         initializeBluePawn();
+         */
         //use update() to update all the changes and also in the view
         update();
         while(! model.isEndStage()) {
