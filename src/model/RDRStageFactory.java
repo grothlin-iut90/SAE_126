@@ -59,8 +59,8 @@ public class RDRStageFactory extends StageElementsFactory{
         Card[] PlayerCards1 = new Card[5];
         Card[] PlayerCards2 = new Card[5];
         for (int i = 0; i < 5; i++){
-            PlayerCards1[i] = new Card(i,i%3+1,stageModel);
-            PlayerCards2[i] = new Card(i,i%3+1,stageModel);
+            PlayerCards1[i] = cardDeck.drawCard();
+            PlayerCards2[i] = cardDeck.drawCard();
         }
         stageModel.setPlayerCards(PlayerCards1, 1);
         stageModel.setPlayerCards(PlayerCards2, 2);

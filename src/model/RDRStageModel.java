@@ -2,6 +2,8 @@ package model;
 
 import boardifier.model.*;
 
+import java.util.Stack;
+
 public class RDRStageModel extends GameStageModel{
 
     // define stage state variables
@@ -255,89 +257,89 @@ public class RDRStageModel extends GameStageModel{
         }
     }
     private void setupCallbacks() {
-        /* function that check if both players can't play and if true then use computePartyResult to check the winner
-
-        onPutInContainer( (element, gridDest, rowDest, colDest) -> {
-            // just check when pawns are put in 3x3 board
+        onPutInContainer((element, gridDest, rowDest, colDest) -> {
             if (gridDest != board) return;
-            Pawn p = (Pawn) element;
-            if (p.getColor() == 0) {
-                blackPawnsToPlay--;
-            }
-            else {
-                redPawnsToPlay--;
-            }
-            if ((blackPawnsToPlay == 0) && (redPawnsToPlay == 0)) {
+            if (!(element instanceof Pawn)) return;
+            if (!canPlayerPlay(0) || !canPlayerPlay(1)) {
                 computePartyResult();
             }
         });
-         */
+    }
+
+    // Fonction pour vérifier si un joueur peut jouer
+    private boolean canPlayerPlay(int idPlayer) {
+        if (idPlayer == 0) {
+            return bluePawnsToPlay > 0 || blueHeroCardsUsed < MAX_HERO_CARDS;
+        } else {
+            return redPawnsToPlay > 0 || redHeroCardsUsed < MAX_HERO_CARDS;
+        }
     }
 
     // function to know the result (need to change everything)
-    private void computePartyResult() {
-        /*
-        int idWinner = -1;
-        // get the empty cell, which should be in 2D at [0,0], [0,2], [1,1], [2,0] or [2,2]
-        // i.e. or in 1D at index 0, 2, 4, 6 or 8
-        int i = 0;
-        int nbBlue = 0;
-        int nbRed = 0;
-        int countBlue = 0;
-        int countRed = 0;
-        Pawn p = null;
-        int row, col;
-        for (i = 0; i < 9; i+=2) {
-            if (board.isEmptyAt(i / 3, i % 3)) break;
-        }
-        // get the 4 adjacent cells (if they exist) starting by the upper one
-        row = (i / 3) - 1;
-        col = i % 3;
-        for (int j = 0; j < 4; j++) {
-            // skip invalid cells
-            if ((row >= 0) && (row <= 2) && (col >= 0) && (col <= 2)) {
-                p = (Pawn) (board.getElement(row, col));
-                if (p.getColor() == Pawn.PAWN_BLUE) {
-                    nbBlue++;
-                    countBlue += p.getNumber();
-                } else {
-                    nbRed++;
-                    countRed += p.getNumber();
+    public void computePartyResult() {
+        boolean[][] visited = new boolean[board.getRows()][board.getCols()];
+        int blueScore = 0;
+        int redScore = 0;
+
+        for (int row = 0; row < board.getRows(); row++) {
+            for (int col = 0; col < board.getCols(); col++) {
+                if (!visited[row][col]) {
+                    Pawn pawn = (Pawn) board.getElement(row, col);
+                    if (pawn != null) {
+                        int zoneSize = exploreZone(row, col, pawn.getColor(), visited);
+                        int zoneScore = zoneSize * zoneSize;
+                        if (pawn.getColor() == Pawn.PAWN_BLUE) {
+                            blueScore += zoneScore;
+                        } else if (pawn.getColor() == Pawn.PAWN_RED) {
+                            redScore += zoneScore;
+                        }
+                    }
                 }
             }
-            // change row & col to set them at the correct value for the next iteration
-            if ((j==0) || (j==2)) {
-                row++;
-                col--;
-            }
-            else if (j==1) {
-                col += 2;
-            }
         }
 
-        // decide whose winning
-        if (nbBlue < nbRed) {
-            idWinner = 0;
+        System.out.println("Blue Player Score: " + blueScore);
+        System.out.println("Red Player Score: " + redScore);
+
+        if (blueScore > redScore) {
+            System.out.println("Blue Player Wins!");
+        } else if (redScore > blueScore) {
+            System.out.println("Red Player Wins!");
+        } else {
+            System.out.println("It's a Tie!");
         }
-        else if (nbBlue > nbRed) {
-            idWinner = 1;
-        }
-        else {
-            if (countBlue < countRed) {
-                idWinner = 0;
-            }
-            else if (countBlue > countRed) {
-                idWinner = 1;
-            }
-        }
-        System.out.println("nb blue: "+nbBlue+", nb red: "+nbRed+", count blue: "+countBlue+", count red: "+countRed+", winner is player "+idWinner);
-        // set the winner
-        model.setIdWinner(idWinner);
-        // stop de the game
-        model.stopStage();
-         */
     }
 
+    private int exploreZone(int startRow, int startCol, int color, boolean[][] visited) {
+        int zoneSize = 0;
+        Stack<int[]> stack = new Stack<>();
+        stack.push(new int[]{startRow, startCol});
+
+        while (!stack.isEmpty()) {
+            int[] position = stack.pop();
+            int row = position[0];
+            int col = position[1];
+
+            if (row < 0 || row >= board.getRows() || col < 0 || col >= board.getCols() || visited[row][col]) {
+                continue;
+            }
+
+            Pawn pawn = (Pawn) board.getElement(row, col);
+            if (pawn == null || pawn.getColor() != color) {
+                continue;
+            }
+
+            visited[row][col] = true;
+            zoneSize++;
+
+            stack.push(new int[]{row - 1, col}); // Up
+            stack.push(new int[]{row + 1, col}); // Down
+            stack.push(new int[]{row, col - 1}); // Left
+            stack.push(new int[]{row, col + 1}); // Right
+        }
+
+        return zoneSize;
+    }
 
     @Override
     public StageElementsFactory getDefaultElementFactory() {

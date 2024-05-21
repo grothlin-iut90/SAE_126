@@ -9,9 +9,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RDRBoard extends ContainerElement {
+    private int nbRows = 9;
+    private int nbCols = 9;
     public RDRBoard(int x, int y, GameStageModel gameStageModel) {
         // call the super-constructor to create a 9x9 grid, named "RDRBoard", and in x,y in space
         super("RDRBoard", x, y, 9 , 9, gameStageModel);
+    }
+
+    public int getRows(){
+        return nbRows;
+    }
+    public int getCols(){
+        return nbCols;
     }
 
     /*

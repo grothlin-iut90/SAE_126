@@ -4,11 +4,9 @@ import boardifier.control.ActionFactory;
 import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
 import boardifier.model.GameElement;
-import boardifier.model.ContainerElement;
 import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
-import boardifier.view.TextLook;
 import boardifier.view.View;
 import model.*;
 
@@ -35,15 +33,22 @@ public class RDRController extends Controller {
     public void stageLoop() {
         consoleIn = new BufferedReader(new InputStreamReader(System.in));
         //used to test useHeroCard
+        /*
         initializeRedPawn();
         initializeBluePawn();
+         */
         //use update() to update all the changes and also in the view
         update();
+
         while(! model.isEndStage()) {
             playTurn();
             endOfTurn();
             update();
         }
+        /*
+        RDRStageModel gameStage = (RDRStageModel) model.getGameStage();
+        gameStage.computePartyResult();
+         */
         endGame();
     }
     private void initializeRedPawn() {
@@ -81,6 +86,10 @@ public class RDRController extends Controller {
                 // Place the red pawn at the specified position
                 placePawn(gameStage.getBluePawns()[bluePawnsToPlay - 1], row, col);
                 // Reduce the number of red pawns to play
+                gameStage.reduceBluePawnToPlay();
+                placePawn(gameStage.getBluePawns()[bluePawnsToPlay - 2], 2, 5);
+                gameStage.reduceBluePawnToPlay();
+                placePawn(gameStage.getBluePawns()[bluePawnsToPlay - 3], 1, 5);
                 gameStage.reduceBluePawnToPlay();
                 System.out.println("Red pawn placed at row " + row + ", col " + col);
             } else {
@@ -130,7 +139,6 @@ public class RDRController extends Controller {
             }
         }
     }
-
     private boolean handleMoveKingAndPlacePawn(Player p, RDRStageModel gameStage) {
         System.out.print(p.getName() + " > ");
         int NumberCardPlayed = getValidatedCardNumber(gameStage, p);
@@ -182,7 +190,6 @@ public class RDRController extends Controller {
             }
         }
     }
-
     private void removeCardFromHand(RDRStageModel gameStage, int numberCardPlayed) {
         Card cardToPlay = gameStage.getCards(model.getIdPlayer())[numberCardPlayed];
         PlayerCardHand playerHand = gameStage.getPlayerCardHand(model.getIdPlayer());
@@ -192,7 +199,6 @@ public class RDRController extends Controller {
             System.out.println(gameStage.getCards(2)[i]);
         }
     }
-
     public boolean useHeroCard(int idPlayer, String direction, int move) {
         RDRStageModel gameStage = (RDRStageModel) model.getGameStage();
         RDRBoard board = gameStage.getBoard();
@@ -246,10 +252,6 @@ public class RDRController extends Controller {
         }
         return false;
     }
-
-
-
-
     private void handleDrawMoveCard(RDRStageModel gameStage) {
         try {
             if (gameStage.getCards(model.getIdPlayer()).length < 5) {
@@ -261,7 +263,6 @@ public class RDRController extends Controller {
             System.out.println("No more cards available in the deck.");
         }
     }
-
     public void endOfTurn() {
 
         model.setNextPlayer();
@@ -320,8 +321,6 @@ public class RDRController extends Controller {
         RDRBoard board = gameStage.getBoard();
         board.addElement(pawn, row, col);
     }
-
-
     public void AfficherPos(){
         RDRStageModel gameStage = (RDRStageModel) model.getGameStage();
         GameElement pawn = gameStage.getKingPawn();
@@ -330,7 +329,6 @@ public class RDRController extends Controller {
         int currentCol = currentPosition[1];
         System.out.println("CurrentRow : " + currentRow + ", CurrentCol : " + currentCol);
     }
-
     public int[] getMoveFromDirection(String direction, int move) {
         // Get the current position of the KingPawn
         AfficherPos();
@@ -376,7 +374,6 @@ public class RDRController extends Controller {
                 System.out.println("Invalid direction");
                 return null;
         }
-
         // Check if the new position is within the board limits
         if (newRow >= 0 && newRow <= 8 && newCol >= 0 && newCol <= 8) {
             return new int[] { newRow, newCol };
