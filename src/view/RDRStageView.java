@@ -15,13 +15,15 @@ public class RDRStageView extends GameStageView {
 
     public void createLooks(){
         RDRStageModel model = (RDRStageModel)gameStageModel;
+
         addLook(new TextLook(model.getPlayerName(0)));
         addLook(new TextLook(model.getPlayerName(1)));
+
 
         // create a ClassicBoardLook (with borders and coordinates) for the main board.
         addLook(new ClassicBoardLook(2, 4, model.getBoard(), 1, 1, true));
 
-        addLook(new PawnLook(model.getKingPawn()));
+
 
         // create looks for both pots
         addLook(new BluePawnPotLook(model.getBluePot()));
@@ -31,6 +33,8 @@ public class RDRStageView extends GameStageView {
             addLook(new PawnLook(model.getBluePawns()[i]));
             addLook(new PawnLook(model.getRedPawns()[i]));
         }
+
+        addLook(new PawnLook(model.getKingPawn()));
 
         addLook(new BlueHeroCardPotLook(model.getblueHeroPot()));
         addLook(new RedHeroCardPotLook(model.getRedHeroPot()));

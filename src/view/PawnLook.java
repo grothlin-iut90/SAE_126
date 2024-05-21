@@ -21,10 +21,14 @@ public class PawnLook extends ElementLook {
 
         if (pawn.getColor() == Pawn.PAWN_BLUE) {
             shape[0][0] = ConsoleColor.BLUE + "o" + ConsoleColor.RESET;
-        } else if (pawn.getColor() == Pawn.PAWN_YELLOW) {
-            shape[0][0] = ConsoleColor.YELLOW + "●" + ConsoleColor.RESET;
-        } else {
+            System.out.println("Rendered blue pawn");
+        } else if (pawn.getColor() == Pawn.PAWN_RED) {
             shape[0][0] = ConsoleColor.RED + "o" + ConsoleColor.RESET;
+            System.out.println("Rendered red pawn");
+        }
+        else {
+            shape[0][0] = ConsoleColor.YELLOW + "●" + ConsoleColor.RESET;
+            System.out.println("Rendered yellow pawn");
         }
     }
 }

@@ -25,6 +25,7 @@ public class RDRStageFactory extends StageElementsFactory{
         textPlayer2.setLocation(0,25);
         stageModel.setPlayerName(textPlayer2, 1);
 
+
         // create the board, in 0,5 in the virtual space
         RDRBoard board = new RDRBoard(0, 5, stageModel);
         // assign the board to the game stage model
@@ -37,16 +38,17 @@ public class RDRStageFactory extends StageElementsFactory{
 
 
         //create the blue pot in 40,14 in the virtual space
-        RDRPawnPot bluePot = new RDRPawnPot(40,14, stageModel);
+        RDRPawnPot bluePot = new RDRPawnPot(40,6, stageModel);
         // assign the blue pot to the game stage model
         stageModel.setBluePot(bluePot);
         //create the red pot in 40,6 in the virtual space
-        RDRPawnPot redPot = new RDRPawnPot(40,6, stageModel);
+        RDRPawnPot redPot = new RDRPawnPot(40,14, stageModel);
         // assign the red pot to the game stage model
         stageModel.setRedPot(redPot);
 
+
         //Card deck
-        CardDeck cardDeck = new CardDeck(40, 22, stageModel);
+        CardDeck cardDeck = new CardDeck(39, 21, stageModel);
         stageModel.setCardDeck(cardDeck);
 
         //Create the players card hand
@@ -56,6 +58,7 @@ public class RDRStageFactory extends StageElementsFactory{
         //Player 2 hand
         PlayerCardHand player2CardHand = new PlayerCardHand(1, 26, stageModel);
         stageModel.setPlayerCardHand(player2CardHand, 1);
+
 
         Card[] PlayerCards1 = new Card[5];
         Card[] PlayerCards2 = new Card[5];
@@ -70,6 +73,7 @@ public class RDRStageFactory extends StageElementsFactory{
             player1CardHand.addElement(PlayerCards1[i], 0, i);
             player2CardHand.addElement(PlayerCards2[i], 0, i);
         }
+
 
 
         /* create the pawns
@@ -95,11 +99,11 @@ public class RDRStageFactory extends StageElementsFactory{
         }
 
         // create the HeroCardPot for player 2
-        RDRHeroCardPot Player2HeroCardPot = new RDRHeroCardPot(40, 10, stageModel);
+        RDRHeroCardPot Player2HeroCardPot = new RDRHeroCardPot(40, 18, stageModel);
         // assign the HeroCardPot for player 2
         stageModel.setRedHeroPot(Player2HeroCardPot);
         // create the HeroCardPot for player 1
-        RDRHeroCardPot Player1HeroCardPot = new RDRHeroCardPot(40, 18, stageModel);
+        RDRHeroCardPot Player1HeroCardPot = new RDRHeroCardPot(40, 10, stageModel);
         // assign the HeroCardPot for player 1
         stageModel.setBlueHeroPot(Player1HeroCardPot);
 

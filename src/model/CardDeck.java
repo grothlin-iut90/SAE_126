@@ -17,8 +17,8 @@ public class CardDeck extends ContainerElement {
 
     private void initializeDeck() {
         cards = new ArrayList<>();
-        for (int i = 0; i < 52; i++) {
-            cards.add(new Card((i % 7), (i % 3) + 1, gameStageModel)); // Initialisation simple pour l'exemple
+        for (int i = 0; i < 24; i++) {
+            cards.add(new Card((i % 8), (i % 3) + 1, gameStageModel)); // Initialisation simple pour l'exemple
         }
         Collections.shuffle(cards); // Mélange le deck
     }
