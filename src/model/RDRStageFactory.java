@@ -5,6 +5,9 @@ import boardifier.model.GameStageModel;
 import boardifier.model.StageElementsFactory;
 import boardifier.model.TextElement;
 import view.HeroCardLook;
+import java.util.Random;
+
+import java.util.Collections;
 
 public class RDRStageFactory extends StageElementsFactory{
     private final RDRStageModel stageModel;
@@ -47,9 +50,20 @@ public class RDRStageFactory extends StageElementsFactory{
         stageModel.setRedPot(redPot);
 
 
-        //Card deck
-        CardDeck cardDeck = new CardDeck(39, 21, stageModel);
-        stageModel.setCardDeck(cardDeck);
+        //Card creation
+        Card[] cards = new Card[24];
+        for (int i = 0; i < 24; i++) {
+            //cards.add(new Card((i % 8), 1, gameStageModel));
+            cards[i] = new Card((i % 8), (i % 3) + 1, stageModel);
+        }
+        //Shuffling
+        Random rand = new Random();
+        for (int i = 0; i < cards.length; i++) {
+            int randomIndexToSwap = rand.nextInt(cards.length);
+            Card temp = cards[randomIndexToSwap];
+            cards[randomIndexToSwap] = cards[i];
+            cards[i] = temp;
+        }
 
         //Create the players card hand
         //Player 1 hand
@@ -59,13 +73,13 @@ public class RDRStageFactory extends StageElementsFactory{
         PlayerCardHand player2CardHand = new PlayerCardHand(1, 26, stageModel);
         stageModel.setPlayerCardHand(player2CardHand, 1);
 
-
         Card[] PlayerCards1 = new Card[5];
         Card[] PlayerCards2 = new Card[5];
         for (int i = 0; i < 5; i++){
-            PlayerCards1[i] = cardDeck.drawCard();
-            PlayerCards2[i] = cardDeck.drawCard();
+            PlayerCards1[i] = cards[i];
+            PlayerCards2[i] = cards[i+5];
         }
+
         stageModel.setPlayerCards(PlayerCards1, 0);
         stageModel.setPlayerCards(PlayerCards2, 1);
 
@@ -74,7 +88,16 @@ public class RDRStageFactory extends StageElementsFactory{
             player2CardHand.addElement(PlayerCards2[i], 0, i);
         }
 
+        //Card deck
+        CardDeck cardDeck = new CardDeck(39, 21, stageModel);
+        stageModel.setCardDeck(cardDeck);
 
+        Card[] deck = new Card[14];
+        for (int i = 0; i < 14; i++){
+            deck[i] = cards[i+10];
+            cardDeck.addCard(cards[i+10]);
+            cardDeck.addElement(deck[i], 0, i);
+        }
 
         /* create the pawns
             NB: their coordinates are by default 0,0 but since they are put

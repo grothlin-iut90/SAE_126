@@ -6,6 +6,7 @@ import boardifier.control.Logger;
 import boardifier.view.ClassicBoardLook;
 
 import boardifier.view.TextLook;
+import model.CardDeck;
 import model.RDRStageModel;
 
 public class RDRStageView extends GameStageView {
@@ -53,6 +54,10 @@ public class RDRStageView extends GameStageView {
             addLook(new CardLook(model.getCards(1)[i]));
         }
 
+        CardDeck deck = model.getCardDeck();
+        for(int i = 0; i < deck.getNumberCardsLeft(); i++){
+            addLook(new CardLook(deck.getCards().get(i)));
+        }
         /*
         addLook(new TextLook(model.getBluePawnsRemaining()));
         System.out.println("nbr bleu:"+ model.getBluePawnsRemaining());

@@ -131,7 +131,7 @@ public class RDRController extends Controller {
                             break;
 
                         case 3:
-                            handleDrawMoveCard(gameStage);
+                            ok = handleDrawMoveCard(gameStage);
                             break;
 
                         default:
@@ -198,7 +198,9 @@ public class RDRController extends Controller {
     private void removeCardFromHand(RDRStageModel gameStage, int numberCardPlayed) {
         Card cardToPlay = gameStage.getCards(model.getIdPlayer())[numberCardPlayed];
         PlayerCardHand playerHand = gameStage.getPlayerCardHand(model.getIdPlayer());
-        playerHand.removeCardFromPlayerHand(cardToPlay);
+        CardDeck deck = gameStage.getCardDeck();
+        //Adding the used card back into the back of the deck
+        deck.addCard(playerHand.removeCardFromPlayerHand(cardToPlay, numberCardPlayed));
         System.out.println("Card removed from hand.");
         for (int i = 0; i < 5; i++) {
             System.out.println(gameStage.getCards(model.getIdPlayer())[i]);
@@ -260,16 +262,20 @@ public class RDRController extends Controller {
         }
         return false;
     }
-    private void handleDrawMoveCard(RDRStageModel gameStage) {
+    private boolean handleDrawMoveCard(RDRStageModel gameStage) {
+        PlayerCardHand playerHand = gameStage.getPlayerCardHand(model.getIdPlayer());
         try {
-            if (gameStage.getCards(model.getIdPlayer()).length < 5) {
-                drawAndAddCard(gameStage.getPlayerCardHand(model.getIdPlayer()));
+            if (playerHand.canDrawCard()) {
+                drawAndAddCard(gameStage, playerHand);
+                return true;
             } else {
                 System.out.println("You only can draw a card if you have less than 5 cards.");
+                return false;
             }
         } catch (IllegalStateException e) {
             System.out.println("No more cards available in the deck.");
         }
+        return false;
     }
     public void endOfTurn() {
 
@@ -326,14 +332,15 @@ public class RDRController extends Controller {
         play.start();
         return true;
     }
-    public void drawAndAddCard(PlayerCardHand playerHand) {
-        Card drawnCard = cardDeck.drawCard();
-        playerHand.addCardToPlayerHand(drawnCard, 1);
-    }
     public void placePawn(Pawn pawn, int row, int col) {
         RDRStageModel gameStage = (RDRStageModel) model.getGameStage();
         RDRBoard board = gameStage.getBoard();
         board.addElement(pawn, row, col);
+    }
+    public void drawAndAddCard(RDRStageModel gameStage, PlayerCardHand playerHand) {
+        CardDeck cardDeck = gameStage.getCardDeck();
+        Card drawnCard = cardDeck.drawCard();
+        playerHand.addElement(drawnCard, 0, playerHand.getIndexAvailableSpace());
     }
     public void AfficherPos(){
         RDRStageModel gameStage = (RDRStageModel) model.getGameStage();

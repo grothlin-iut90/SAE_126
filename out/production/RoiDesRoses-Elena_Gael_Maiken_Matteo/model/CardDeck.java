@@ -10,6 +10,7 @@ import java.util.List;
 public class CardDeck extends ContainerElement {
 
     private List<Card> cards; // Liste des cartes dans le deck
+    private int drawnCards;
 
     public CardDeck(int x, int y, GameStageModel gameStageModel){
         super("cardDeck", x, y, 1, 1, gameStageModel);
@@ -18,7 +19,7 @@ public class CardDeck extends ContainerElement {
 
     private void initializeDeck() {
         cards = new ArrayList<>();
-        for (int i = 0; i < 52; i++) {
+        for (int i = 0; i < 24; i++) {
             cards.add(new Card(i, (i % 13) + 1, gameStageModel)); // Initialisation simple pour l'exemple
         }
         Collections.shuffle(cards); // Mélange le deck
