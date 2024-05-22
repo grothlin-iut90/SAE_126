@@ -25,7 +25,6 @@ public class PlayerCardHand extends ContainerElement {
 
     public Card removeCardFromPlayerHand(Card card, int numberCardPlayed){
         removeElement(card);
-        card.setVisible(false);
         availableStlots[numberCardPlayed] = true;
         numberCardsInPlayerHand--;
         return card;
@@ -35,7 +34,6 @@ public class PlayerCardHand extends ContainerElement {
         for(int i = 0; i < 5; i++){
             if(availableStlots[i]){
                 addElement(card, 0, i); // Ajoute la carte à la main
-                card.setVisible(true);
                 System.out.println(card);
                 break;
             }

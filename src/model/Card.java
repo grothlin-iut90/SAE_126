@@ -58,7 +58,6 @@ public class Card extends GameElement {
         }
     }
 
-
     public int getCardSteps() {
         return this.cardStep;
     }

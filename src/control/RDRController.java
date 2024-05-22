@@ -184,7 +184,7 @@ public class RDRController extends Controller {
                 String reader = consoleIn.readLine();
                 int numberCardPlayed = Integer.parseInt(reader) - 1;
                 int cardsLength = gameStage.getCards(model.getIdPlayer()).length;
-                if (numberCardPlayed >= 0 && numberCardPlayed < cardsLength && gameStage.getCards(model.getIdPlayer())[numberCardPlayed].isVisible()) {
+                if (numberCardPlayed >= 0 && numberCardPlayed < cardsLength && gameStage.getCards(model.getIdPlayer())[numberCardPlayed] != null && gameStage.getCards(model.getIdPlayer())[numberCardPlayed].isVisible()) {
                     return numberCardPlayed;
                 } else {
                     System.out.println("Please enter a valid card number between 0 and " + (cardsLength - 1) + " and ensure the card is visible.");
@@ -200,7 +200,11 @@ public class RDRController extends Controller {
         PlayerCardHand playerHand = gameStage.getPlayerCardHand(model.getIdPlayer());
         CardDeck deck = gameStage.getCardDeck();
         //Adding the used card back into the back of the deck
-        deck.addCard(playerHand.removeCardFromPlayerHand(cardToPlay, numberCardPlayed));
+        deck.addCard(cardToPlay);
+        deck.addElement(cardToPlay, 0, deck.getNumberCardsTotal()-1);
+        //Removing the used card from memory
+        gameStage.removePlayerCard(model.getIdPlayer(), numberCardPlayed);
+
         System.out.println("Card removed from hand.");
         for (int i = 0; i < 5; i++) {
             System.out.println(gameStage.getCards(model.getIdPlayer())[i]);
@@ -340,7 +344,10 @@ public class RDRController extends Controller {
     public void drawAndAddCard(RDRStageModel gameStage, PlayerCardHand playerHand) {
         CardDeck cardDeck = gameStage.getCardDeck();
         Card drawnCard = cardDeck.drawCard();
+        //Moving the card from the deck to the player hand
         playerHand.addElement(drawnCard, 0, playerHand.getIndexAvailableSpace());
+        //Adding the card into memory
+        gameStage.addPlayerCard(model.getIdPlayer(), playerHand.getIndexAvailableSpace(), drawnCard);
     }
     public void AfficherPos(){
         RDRStageModel gameStage = (RDRStageModel) model.getGameStage();

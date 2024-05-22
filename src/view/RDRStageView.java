@@ -55,8 +55,9 @@ public class RDRStageView extends GameStageView {
         }
 
         CardDeck deck = model.getCardDeck();
-        for(int i = 0; i < deck.getNumberCardsLeft(); i++){
+        for(int i = 0; i < 14; i++){
             addLook(new CardLook(deck.getCards().get(i)));
+            System.out.println("look created");
         }
         /*
         addLook(new TextLook(model.getBluePawnsRemaining()));

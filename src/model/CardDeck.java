@@ -32,7 +32,6 @@ public class CardDeck extends ContainerElement {
     }
 
     public void addCard(Card card){
-        //card.setVisible(false);
         cards.addFirst(card);
     }
 
@@ -43,8 +42,7 @@ public class CardDeck extends ContainerElement {
         }
         if (!cards.isEmpty()) {
             numberCardsInDeck--;
-            //cards.get(numberCardsInDeck).setVisible(true);
-            return cards.get(numberCardsInDeck); // Retire et renvoie la dernière carte
+            return cards.remove(numberCardsInDeck); // Retire et renvoie la dernière carte
         } else {
             throw new IllegalStateException("No more cards available");
         }
@@ -53,6 +51,10 @@ public class CardDeck extends ContainerElement {
     public int getNumberCardsLeft(){
         System.out.println(numberCardsInDeck + ", " + cards.size() + "checkDeckSize");
         return numberCardsInDeck;
+    }
+
+    public int getNumberCardsTotal(){
+        return cards.size();
     }
 
     public ArrayList<Card> getCards(){

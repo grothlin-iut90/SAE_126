@@ -185,8 +185,10 @@ public class RDRController extends Controller {
 
     private void removeCardFromHand(RDRStageModel gameStage, int numberCardPlayed) {
         Card cardToPlay = gameStage.getCards(model.getIdPlayer())[numberCardPlayed];
-        PlayerCardHand playerHand = gameStage.getPlayerCardHand(model.getIdPlayer());
-        playerHand.removeCardFromPlayerHand(cardToPlay);
+        CardDeck deck = gameStage.getCardDeck();
+        deck.addElement(cardToPlay, 0, 0);
+        //PlayerCardHand playerHand = gameStage.getPlayerCardHand(model.getIdPlayer());
+        //playerHand.removeCardFromPlayerHand(cardToPlay);
         System.out.println("Card removed from hand.");
         for (int i = 0; i < 5; i++) {
             System.out.println(gameStage.getCards(model.getIdPlayer())[i]);

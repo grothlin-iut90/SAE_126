@@ -134,6 +134,22 @@ public class RDRStageModel extends GameStageModel{
             }
         }
     }
+    public void removePlayerCard(int idPlayer, int idCard){
+        if(idPlayer == 0){
+            this.PlayerCards1[idCard] = null;
+        }
+        else{
+            this.PlayerCards2[idCard] = null;
+        }
+    }
+    public void addPlayerCard(int idPlayer, int idCard, Card card){
+        if(idPlayer == 0){
+            this.PlayerCards1[idCard] = card;
+        }
+        else{
+            this.PlayerCards2[idCard] = card;
+        }
+    }
     public RDRPawnPot getBluePot() {
         return bluePot;
     }
