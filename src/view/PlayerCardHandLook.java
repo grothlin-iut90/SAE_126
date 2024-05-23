@@ -1,6 +1,8 @@
 package view;
 
 import boardifier.model.ContainerElement;
+import boardifier.view.ContainerLook;
+import boardifier.view.GridLook;
 import boardifier.view.TableLook;
 
 public class PlayerCardHandLook extends TableLook {

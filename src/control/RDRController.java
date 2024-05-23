@@ -1,26 +1,24 @@
 package control;
 
-import boardifier.control.ActionFactory;
 import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
 import boardifier.model.GameElement;
 import boardifier.model.Model;
 import boardifier.model.Player;
-import boardifier.model.action.ActionList;
 import boardifier.view.View;
 import model.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RDRController extends Controller {
 
     BufferedReader consoleIn;
-    private CardDeck cardDeck;
+    CardDeck cardDeck;
     boolean firstPlayer;
-    int numberTurnPlayed;
 
     public RDRController(Model model, View view) {
         super(model, view);
@@ -33,7 +31,7 @@ public class RDRController extends Controller {
      */
     public void stageLoop() {
         consoleIn = new BufferedReader(new InputStreamReader(System.in));
-        numberTurnPlayed = 0;
+        RDRStageModel gameStage = (RDRStageModel) model.getGameStage();
         //used to test useHeroCard
         /*
         initializeRedPawn();
@@ -45,17 +43,14 @@ public class RDRController extends Controller {
             playTurn();
             endOfTurn();
             update();
-            numberTurnPlayed++;
         }
         /*
         RDRStageModel gameStage = (RDRStageModel) model.getGameStage();
         gameStage.computePartyResult();
          */
-        System.out.println(numberTurnPlayed);
         endGame();
     }
-
-    private void initializeRedPawn() {
+    void initializeRedPawn() {
         RDRStageModel gameStage = (RDRStageModel) model.getGameStage();
         int row = 4;
         int col = 5;
@@ -77,8 +72,7 @@ public class RDRController extends Controller {
             System.out.println("Position (" + row + ", " + col + ") is not empty.");
         }
     }
-
-    private void initializeBluePawn() {
+    void initializeBluePawn() {
         RDRStageModel gameStage = (RDRStageModel) model.getGameStage();
         int row = 3;
         int col = 5;
@@ -104,7 +98,7 @@ public class RDRController extends Controller {
             System.out.println("Position (" + row + ", " + col + ") is not empty.");
         }
     }
-    private void playTurn() {
+    void playTurn() {
         // get the new player
         Player p = model.getCurrentPlayer();
         if (p.getType() == Player.COMPUTER) {
@@ -117,7 +111,7 @@ public class RDRController extends Controller {
             RDRStageModel gameStage = (RDRStageModel) model.getGameStage(); // Access the RDRStageModel instance
             RDRBoard board = gameStage.getBoard();
             while (!ok) {
-                System.out.print("1. Move the King and place a Pawn | 2. Move the King and Use Hero Card | 3. Draw a Move Card > ");
+                System.out.print("1. Move the King and place a Pawn | 2. Move the King and Use Hero Card | 3. Draw a Move Card\n" + "player" + (model.getIdPlayer()+1) + " >");
                 try {
                     String input = consoleIn.readLine();
                     int playmode = Integer.parseInt(input);
@@ -131,6 +125,7 @@ public class RDRController extends Controller {
                             break;
 
                         case 3:
+                            //getFreeCardSlotsController(gameStage.getPlayerCardHand(model.getIdPlayer()));
                             ok = handleDrawMoveCard(gameStage);
                             break;
 
@@ -140,12 +135,15 @@ public class RDRController extends Controller {
                     }
                 } catch (IOException e) {
                     System.out.println("An error occurred. Please try again.");
+                } catch (NumberFormatException e) {
+                    System.out.println("\nEnter a valid number please between 1 and 3 >:)\n");
                 }
             }
         }
     }
-    private boolean handleMoveKingAndPlacePawn(Player p, RDRStageModel gameStage) {
-        System.out.print(p.getName() + " > ");
+
+    boolean handleMoveKingAndPlacePawn(Player p, RDRStageModel gameStage) {
+        System.out.print("What card do you want to play > ");
         int NumberCardPlayed = getValidatedCardNumber(gameStage, p);
         if (NumberCardPlayed == -1) {
             return false;
@@ -157,12 +155,12 @@ public class RDRController extends Controller {
         if (moveSuccessful) {
             removeCardFromHand(gameStage, NumberCardPlayed);
         } else {
-            System.out.println("Incorrect instruction. Retry!");
+            System.out.println("The move was unsuccessful, try another move please");
         }
         return moveSuccessful;
     }
     public boolean handleMoveKingAndUseHeroCard(Player p, RDRStageModel gameStage){
-        System.out.print(p.getName() + " > ");
+        System.out.print("What card do you want to play > ");
         int NumberCardPlayed = getValidatedCardNumber(gameStage, p);
         if (NumberCardPlayed == -1) {
             return false;
@@ -174,7 +172,7 @@ public class RDRController extends Controller {
         if (moveSuccessful) {
             removeCardFromHand(gameStage, NumberCardPlayed);
         } else {
-            System.out.println("Incorrect instruction. Retry!");
+            System.out.println("The move was unsuccessful, try another move please");
         }
         return moveSuccessful;
     }
@@ -184,10 +182,10 @@ public class RDRController extends Controller {
                 String reader = consoleIn.readLine();
                 int numberCardPlayed = Integer.parseInt(reader) - 1;
                 int cardsLength = gameStage.getCards(model.getIdPlayer()).length;
-                if (numberCardPlayed >= 0 && numberCardPlayed < cardsLength && gameStage.getCards(model.getIdPlayer())[numberCardPlayed] != null && gameStage.getCards(model.getIdPlayer())[numberCardPlayed].isVisible()) {
+                if (numberCardPlayed >= 0 && numberCardPlayed < cardsLength && gameStage.getCards(model.getIdPlayer())[numberCardPlayed] != null) {
                     return numberCardPlayed;
                 } else {
-                    System.out.println("Please enter a valid card number between 0 and " + (cardsLength - 1) + " and ensure the card is visible.");
+                    System.out.println("Please enter a valid card number between 1 and " + cardsLength + " and ensure the slot contains a card.");
                 }
             } catch (NumberFormatException | IOException e) {
                 System.out.println("Invalid input. Please enter a number.");
@@ -198,13 +196,8 @@ public class RDRController extends Controller {
     private void removeCardFromHand(RDRStageModel gameStage, int numberCardPlayed) {
         Card cardToPlay = gameStage.getCards(model.getIdPlayer())[numberCardPlayed];
         PlayerCardHand playerHand = gameStage.getPlayerCardHand(model.getIdPlayer());
-        CardDeck deck = gameStage.getCardDeck();
-        //Adding the used card back into the back of the deck
-        deck.addCard(cardToPlay);
-        deck.addElement(cardToPlay, 0, deck.getNumberCardsTotal()-1);
-        //Removing the used card from memory
-        gameStage.removePlayerCard(model.getIdPlayer(), numberCardPlayed);
-
+        gameStage.putCardInDeck(numberCardPlayed, model.getIdPlayer());
+        playerHand.removeCardFromPlayerHand(cardToPlay);
         System.out.println("Card removed from hand.");
         for (int i = 0; i < 5; i++) {
             System.out.println(gameStage.getCards(model.getIdPlayer())[i]);
@@ -214,7 +207,7 @@ public class RDRController extends Controller {
         RDRStageModel gameStage = (RDRStageModel) model.getGameStage();
         RDRBoard board = gameStage.getBoard();
         Player currentPlayer = model.getCurrentPlayer();
-        Pawn kingPawn = gameStage.getKingPawn();
+        GameElement kingPawn = gameStage.getKingPawn();
 
         if (!gameStage.canUseHeroCard(idPlayer)) {
             System.out.println("Player " + idPlayer + " has no hero cards left.");
@@ -222,15 +215,12 @@ public class RDRController extends Controller {
         }
 
         int[] newPosition = getMoveFromDirection(direction, move);
+
         int newRow = newPosition[0];
         int newCol = newPosition[1];
 
-        int [] oldPosition = kingPawn.getPosition();
-        int oldRow = oldPosition[0];
-        int oldCol = oldPosition[1];
-
         if (board.isEmptyAt(newRow, newCol)) {
-            System.out.println("No opponent's pawn at the new position.");
+            System.out.println("\nPlease use a card that leads to an ennemy pawn\n");
             return false;
         } else {
             List<GameElement> elementsAtNewPosition = board.getElements(newRow, newCol);
@@ -240,24 +230,24 @@ public class RDRController extends Controller {
                     if (opponentPawnCast.getPlayerId() != idPlayer) {
                         opponentPawnCast.setVisible(false);
                         board.removeElement(opponentPawnCast);
-                        System.out.println("Removed opponent's pawn at the new position.");
+                        //System.out.println("Removed opponent's pawn at the new position.");
 
-                        if (idPlayer == 1) {
+                        if (idPlayer == 0) {
                             int bluePawnsToPlay = gameStage.getBluePawnsToPlay();
-                            placePawn(gameStage.getBluePawns()[bluePawnsToPlay - 1], oldRow, oldCol);
+                            placePawn(gameStage.getBluePawns()[bluePawnsToPlay - 1], newRow, newCol);
                             gameStage.reduceBluePawnToPlay();
                         } else {
                             int redPawnsToPlay = gameStage.getRedPawnsToPlay();
-                            placePawn(gameStage.getRedPawns()[redPawnsToPlay - 1], oldRow, oldCol);
+                            placePawn(gameStage.getRedPawns()[redPawnsToPlay - 1], newRow, newCol);
                             gameStage.reduceRedPawnToPlay();
                         }
 
                         gameStage.useHeroCard(idPlayer);
 
-                        ActionList actions = ActionFactory.generatePutInContainer(model, kingPawn, "RDRBoard", newRow, newCol);
-                        actions.setDoEndOfTurn(true);
-                        ActionPlayer play = new ActionPlayer(model, this, actions);
-                        play.start();
+                        // Placez le pion du roi sur la nouvelle position
+                        board.removeElement(kingPawn);
+                        board.addElement(kingPawn, newRow, newCol);
+
                         return true;
                     }
                 }
@@ -266,88 +256,93 @@ public class RDRController extends Controller {
         }
         return false;
     }
-    private boolean handleDrawMoveCard(RDRStageModel gameStage) {
-        PlayerCardHand playerHand = gameStage.getPlayerCardHand(model.getIdPlayer());
+    boolean handleDrawMoveCard(RDRStageModel gameStage) {
         try {
-            if (playerHand.canDrawCard()) {
-                drawAndAddCard(gameStage, playerHand);
+            PlayerCardHand playerCardHand = gameStage.getPlayerCardHand(model.getIdPlayer());
+            List<Integer> freeCardSlots = playerCardHand.getFreeCardSlots(playerCardHand);
+            System.out.println(freeCardSlots.size());
+            if (freeCardSlots.size() <= 5 && freeCardSlots.size() > 0) {
+                System.out.println("test");
+                drawAndAddCard(playerCardHand);
+                System.out.println("test1");
                 return true;
             } else {
                 System.out.println("You only can draw a card if you have less than 5 cards.");
-                return false;
             }
         } catch (IllegalStateException e) {
             System.out.println("No more cards available in the deck.");
         }
         return false;
     }
+    public int getFirstPlacePlayerHandCard() {
+        RDRStageModel gameStage = (RDRStageModel) model.getGameStage(); // Access the RDRStageModel instance
+        PlayerCardHand playerCardHand = gameStage.getPlayerCardHand(model.getIdPlayer());
+        List<Integer> freeSlots = playerCardHand.getFreeCardSlots(playerCardHand);
+        if (freeSlots.isEmpty()) {
+            throw new IllegalStateException("No free card slots available");
+        }
+        return freeSlots.get(0);
+    }
     public void endOfTurn() {
-
         model.setNextPlayer();
         // get the new player to display its name
         Player p = model.getCurrentPlayer();
         RDRStageModel stageModel = (RDRStageModel) model.getGameStage();
         //stageModel.getPlayerName(1).setText(p.getName());
     }
-
-    private boolean MoveKingPawn(String direction, int move) {
+    boolean MoveKingPawn(String direction, int move) {
         RDRStageModel gameStage = (RDRStageModel) model.getGameStage();
         RDRBoard board = gameStage.getBoard();
+        Pawn kingPawn = gameStage.getKingPawn();
 
         // Get the new row and column from getMoveFromDirection
         int[] newPosition = getMoveFromDirection(direction, move);
         if (newPosition == null) {
             return false;
         }
-        int row = newPosition[0];
-        int col = newPosition[1];
-        //System.out.println("col" + col + "row "+ row);
-        if (!board.isEmptyAt(row,col)) return false;
+        int newRow = newPosition[0];
+        int newCol = newPosition[1];
 
-        // check if the pawn is still in its pot
-        //ContainerElement pot = null;
-        Pawn kingPawn = gameStage.getKingPawn();
-        int[] oldPosition = kingPawn.getPosition();
-        int oldRow = oldPosition[0];
-        int oldCol = oldPosition[1];
+        if (!board.isEmptyAt(newRow,newCol)) return false;
 
         // compute valid cells for the chosen pawn
-        if (!gameStage.getBoard().canReachCell(row, col)) return false;
-
+        if (!gameStage.getBoard().canReachCell(newRow, newCol)) return false;
         // check the player id and select the pot pawn to player
-        if(numberTurnPlayed == 0){
-        }
-        else if(model.getIdPlayer() == 1){
+        if(model.getIdPlayer() == 0){
             int bluepawnstoplay = gameStage.getBluePawnsToPlay();
-            placePawn(gameStage.getBluePawns()[bluepawnstoplay-1], oldRow, oldCol);
+            placePawn(gameStage.getBluePawns()[bluepawnstoplay-1], newRow, newCol);
             gameStage.reduceBluePawnToPlay();
             //System.out.println("blue pawns remaining : " + gameStage.getBluePawnsRemaining());
         }else{
             int redpawnstoplay = gameStage.getRedPawnsToPlay();
-            placePawn(gameStage.getRedPawns()[redpawnstoplay-1], oldRow, oldCol);
+            placePawn(gameStage.getRedPawns()[redpawnstoplay-1], newRow, newCol);
             gameStage.reduceRedPawnToPlay();
             //System.out.println("red pawns remaining : " + gameStage.getRedPawnsRemaining());
         }
 
-        ActionList actions = ActionFactory.generatePutInContainer(model, kingPawn, "RDRBoard", row, col);
+        // Placez le pion du roi sur la nouvelle position
+        board.removeElement(kingPawn);
+        board.addElement(kingPawn, newRow, newCol);
 
-        actions.setDoEndOfTurn(true); // after playing this action list, it will be the end of turn for current player.
-        ActionPlayer play = new ActionPlayer(model, this, actions);
-        play.start();
         return true;
+    }
+    public void drawAndAddCard(PlayerCardHand playerHand) {
+        RDRStageModel gameStage = (RDRStageModel) model.getGameStage();
+        ArrayList<Card> deck = gameStage.getDeck();
+        System.out.println(deck);
+        if (deck == null) {
+            throw new IllegalStateException("Card deck is not initialized.");
+        }
+        System.out.println("Test 3");
+        Card drawnCard = gameStage.drawCard();
+        System.out.println("drawncard " + drawnCard);
+        gameStage.addCardToPlayerHand(drawnCard, model.getIdPlayer());
+        playerHand.addCardToPlayerHand(drawnCard, getFirstPlacePlayerHandCard());
     }
     public void placePawn(Pawn pawn, int row, int col) {
         RDRStageModel gameStage = (RDRStageModel) model.getGameStage();
         RDRBoard board = gameStage.getBoard();
         board.addElement(pawn, row, col);
-    }
-    public void drawAndAddCard(RDRStageModel gameStage, PlayerCardHand playerHand) {
-        CardDeck cardDeck = gameStage.getCardDeck();
-        Card drawnCard = cardDeck.drawCard();
-        //Moving the card from the deck to the player hand
-        playerHand.addElement(drawnCard, 0, playerHand.getIndexAvailableSpace());
-        //Adding the card into memory
-        gameStage.addPlayerCard(model.getIdPlayer(), playerHand.getIndexAvailableSpace(), drawnCard);
     }
     public void AfficherPos(){
         RDRStageModel gameStage = (RDRStageModel) model.getGameStage();
@@ -359,15 +354,12 @@ public class RDRController extends Controller {
     }
     public int[] getMoveFromDirection(String direction, int move) {
         // Get the current position of the KingPawn
-        AfficherPos();
+        //AfficherPos();
         RDRStageModel gameStage = (RDRStageModel) model.getGameStage();
-        GameElement pawn = gameStage.getKingPawn();
-        int[] currentPosition = ((Pawn) pawn).getPosition();
-        int currentRow = currentPosition[0];
-        int currentCol = currentPosition[1];
-
-        int newRow = currentRow;
-        int newCol = currentCol;
+        Pawn kingPawn = gameStage.getKingPawn();
+        int[] currentPosition = kingPawn.getPosition();
+        int newRow = currentPosition[0];
+        int newCol = currentPosition[1];
 
         switch (direction) {
             case "N":
@@ -407,9 +399,51 @@ public class RDRController extends Controller {
             return new int[] { newRow, newCol };
         } else {
             //System.out.println("NewRow : " + newRow + ", NewCol : " + newCol);
-            System.out.println("New position is out of bounds");
+            System.out.println("The pawn is out of the board");
             return null;
         }
+    }
+
+    public boolean canUseCard(Card card){
+        RDRStageModel gameStage = (RDRStageModel) model.getGameStage();
+        RDRBoard board = gameStage.getBoard();
+
+        String direction = card.getStringDirection();
+        int move = card.getCardSteps();
+
+        int[] newPosition = getMoveFromDirection(direction, move);
+        if (newPosition == null) {
+            return false;
+        }
+        int newRow = newPosition[0];
+        int newCol = newPosition[1];
+
+        if (!board.isEmptyAt(newRow,newCol)) {
+            return false;
+        }
+
+        if (!gameStage.getBoard().canReachCell(newRow, newCol)) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean canUseAnyCard(){
+        RDRStageModel gameStage = (RDRStageModel) model.getGameStage();
+        RDRBoard board = gameStage.getBoard();
+        Card[] cards = gameStage.getCards(model.getIdPlayer());
+
+        for(Card card : cards){
+            if(!canUseCard(card)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean canDrawCard(){
+        //Return true if the player has less than 5 cards in hand
+        return ((RDRStageModel)model.getGameStage()).getCards(model.getIdPlayer()).length < 5;
     }
 
 }

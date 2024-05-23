@@ -2,6 +2,8 @@ package model;
 
 import boardifier.model.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Stack;
 
 public class RDRStageModel extends GameStageModel{
@@ -19,6 +21,7 @@ public class RDRStageModel extends GameStageModel{
     private Pawn[] redPawns;
     private Card[] PlayerCards1;
     private Card[] PlayerCards2;
+    private ArrayList<Card> deck;
     private HeroCard[] PlayerHeroCards1;
     private HeroCard[] PlayerHeroCards2;
     private int numberOfCard;
@@ -29,6 +32,7 @@ public class RDRStageModel extends GameStageModel{
     private Pawn kingPawn;
     private TextElement player1Name;
     private TextElement player2Name;
+    private int numberCardsLeft;
     private int blueHeroCardsUsed;
     private int redHeroCardsUsed;
     private int cardBlueUsed;
@@ -99,7 +103,7 @@ public class RDRStageModel extends GameStageModel{
         addContainer(cardDeck);
     }
     public PlayerCardHand getPlayerCardHand(int idPlayer){
-        if(idPlayer == 0) {
+        if(idPlayer==0) {
             return player1CardHand;
         }
         return player2CardHand;
@@ -115,13 +119,13 @@ public class RDRStageModel extends GameStageModel{
         }
     }
     public Card[] getCards(int idPlayer){
-        if(idPlayer == 0) {
+        if(idPlayer==0) {
             return PlayerCards1;
         }
         return PlayerCards2;
     }
     public void setPlayerCards(Card[] PlayerCards, int idPlayer){
-        if(idPlayer == 0) {
+        if(idPlayer==0) {
             this.PlayerCards1 = PlayerCards;
             for (int i = 0; i < PlayerCards.length; i++) {
                 addElement(PlayerCards[i]);
@@ -132,22 +136,6 @@ public class RDRStageModel extends GameStageModel{
             for (int i = 0; i < PlayerCards.length; i++) {
                 addElement(PlayerCards[i]);
             }
-        }
-    }
-    public void removePlayerCard(int idPlayer, int idCard){
-        if(idPlayer == 0){
-            this.PlayerCards1[idCard] = null;
-        }
-        else{
-            this.PlayerCards2[idCard] = null;
-        }
-    }
-    public void addPlayerCard(int idPlayer, int idCard, Card card){
-        if(idPlayer == 0){
-            this.PlayerCards1[idCard] = card;
-        }
-        else{
-            this.PlayerCards2[idCard] = card;
         }
     }
     public RDRPawnPot getBluePot() {
@@ -256,8 +244,9 @@ public class RDRStageModel extends GameStageModel{
             }
         }
     }
+
     public TextElement getPlayerName(int idPlayer) {
-        if(idPlayer == 0) {
+        if(idPlayer == 1) {
             return player1Name;
         }
         return player2Name;
@@ -272,6 +261,21 @@ public class RDRStageModel extends GameStageModel{
             addElement(playerName);
         }
     }
+
+    public ArrayList<Card> getDeck() {
+        return deck;
+    }
+    public void setDeck(ArrayList<Card> deck) {
+        this.deck = deck;
+    }
+
+    public int getNumberCardsLeft() {
+        return numberCardsLeft;
+    }
+    public void setNumberCardsLeft(int numberCardsLeft) {
+        this.numberCardsLeft = numberCardsLeft;
+    }
+
     private void setupCallbacks() {
         onPutInContainer((element, gridDest, rowDest, colDest) -> {
             if (gridDest != board) return;
@@ -356,9 +360,60 @@ public class RDRStageModel extends GameStageModel{
 
         return zoneSize;
     }
-
     @Override
     public StageElementsFactory getDefaultElementFactory() {
         return new RDRStageFactory(this);
+    }
+
+    public void putCardInDeck(int idCard, int idPlayer) {
+        //Get the card corresponding to the idCard
+        Card card = getCards(idPlayer)[idCard];
+        //Setting it to null to signify its deletion from the player hand
+        getCards(idPlayer)[idCard] = null;
+        //Adding it to the front of the deck (back of the pile), to hold until we shuffle it again
+        deck.add(0, card);
+    }
+
+    public void addCardToPlayerHand(Card card, int idPlayer) {
+        if (idPlayer == 0) {
+            for(int i = 0; i < 5; i++){
+                if(PlayerCards1[i] == null){
+                    PlayerCards1[i] = card;
+                    break;
+                }
+            }
+        } else {
+            for(int i = 0; i < 5; i++){
+                if(PlayerCards2[i] == null){
+                    PlayerCards2[i] = card;
+                    break;
+                }
+            }
+        }
+    }
+
+    public Card drawCard() {
+        if(numberCardsLeft == 0){
+            //If all cards have been used, we shuffle to ones that were used
+            Collections.shuffle(deck);
+            //Reset the number of cards left to be used
+            numberCardsLeft = deck.size();
+        }
+        if (numberCardsLeft > 0) {
+            //Remove the last card from the deck
+            numberCardsLeft--;
+            return deck.remove(deck.size() - 1);// Retire et renvoie la dernière carte
+        } else {
+            throw new IllegalStateException("No more cards available");
+        }
+    }
+
+    public void initializeDeck() {
+        numberCardsLeft = 24;
+        deck = new ArrayList<>();
+        for (int i = 0; i < numberCardsLeft; i++) {
+            deck.add(new Card((i % 8), (i % 3) + 1, this));
+        }
+        Collections.shuffle(deck); // Mélange le deck
     }
 }

@@ -5,9 +5,6 @@ import boardifier.model.GameStageModel;
 import boardifier.model.StageElementsFactory;
 import boardifier.model.TextElement;
 import view.HeroCardLook;
-import java.util.Random;
-
-import java.util.Collections;
 
 public class RDRStageFactory extends StageElementsFactory{
     private final RDRStageModel stageModel;
@@ -28,7 +25,6 @@ public class RDRStageFactory extends StageElementsFactory{
         textPlayer2.setLocation(0,25);
         stageModel.setPlayerName(textPlayer2, 1);
 
-
         // create the board, in 0,5 in the virtual space
         RDRBoard board = new RDRBoard(0, 5, stageModel);
         // assign the board to the game stage model
@@ -48,21 +44,14 @@ public class RDRStageFactory extends StageElementsFactory{
         RDRPawnPot redPot = new RDRPawnPot(40,14, stageModel);
         // assign the red pot to the game stage model
         stageModel.setRedPot(redPot);
+        // create the CardDeck
+        CardDeck cardDeck = new CardDeck(40, 22, stageModel);
+        stageModel.setCardDeck(cardDeck);
 
+        stageModel.initializeDeck();
 
-        //Card creation
-        Card[] cards = new Card[24];
-        for (int i = 0; i < 24; i++) {
-            //cards.add(new Card((i % 8), 1, gameStageModel));
-            cards[i] = new Card((i % 8), (i % 3) + 1, stageModel);
-        }
-        //Shuffling
-        Random rand = new Random();
-        for (int i = 0; i < cards.length; i++) {
-            int randomIndexToSwap = rand.nextInt(cards.length);
-            Card temp = cards[randomIndexToSwap];
-            cards[randomIndexToSwap] = cards[i];
-            cards[i] = temp;
+        for(Card card : stageModel.getDeck()){
+            stageModel.addElement(card);
         }
 
         //Create the players card hand
@@ -76,41 +65,29 @@ public class RDRStageFactory extends StageElementsFactory{
         Card[] PlayerCards1 = new Card[5];
         Card[] PlayerCards2 = new Card[5];
         for (int i = 0; i < 5; i++){
-            PlayerCards1[i] = cards[i];
-            PlayerCards2[i] = cards[i+5];
+            PlayerCards1[i] = stageModel.drawCard();
+            PlayerCards2[i] = stageModel.drawCard();
         }
-
         stageModel.setPlayerCards(PlayerCards1, 0);
         stageModel.setPlayerCards(PlayerCards2, 1);
-
         for (int i = 0; i < 5; i++){
             player1CardHand.addElement(PlayerCards1[i], 0, i);
             player2CardHand.addElement(PlayerCards2[i], 0, i);
         }
 
-        //Card deck
-        CardDeck cardDeck = new CardDeck(39, 21, stageModel);
-        stageModel.setCardDeck(cardDeck);
-
-        Card[] deck = new Card[14];
-        for (int i = 0; i < 14; i++){
-            deck[i] = cards[i+10];
-            cardDeck.addCard(cards[i+10]);
-            cardDeck.addElement(deck[i], 0, i);
-        }
 
         /* create the pawns
             NB: their coordinates are by default 0,0 but since they are put
             within the pots, their real coordinates will be computed by the view
         */
         Pawn[] bluePawns = new Pawn[26];
-        for(int i=0;i<26;i++) {
+        for(int i=0;i<bluePawns.length;i++) {
             bluePawns[i] = new Pawn(i,Pawn.PAWN_BLUE, stageModel);
         }
         // assign the black pawns to the game stage model
         stageModel.setBluePawns(bluePawns);
         Pawn[] redPawns = new Pawn[26];
-        for(int i=0;i<26;i++) {
+        for(int i=0;i<redPawns.length;i++) {
             redPawns[i] = new Pawn(i,Pawn.PAWN_RED, stageModel);
         }
         // assign the black pawns to the game stage model

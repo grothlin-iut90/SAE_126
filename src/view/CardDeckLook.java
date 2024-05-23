@@ -1,7 +1,12 @@
 package view;
 
 import boardifier.model.ContainerElement;
+import boardifier.view.ContainerLook;
+import boardifier.view.ElementLook;
 import boardifier.view.TableLook;
+import model.CardDeck;
+
+import java.awt.*;
 
 public class CardDeckLook extends TableLook {
     public CardDeckLook(ContainerElement containerElement) {

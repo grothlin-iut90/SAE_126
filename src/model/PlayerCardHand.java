@@ -10,59 +10,32 @@ import java.util.List;
 
 public class PlayerCardHand extends ContainerElement {
 
+
     private Controller controller;
-    private int numberCardsInPlayerHand;
-    private boolean[] availableStlots;
 
     public PlayerCardHand(int x, int y, GameStageModel gameStageModel){
         super("playercardhand", x, y, 1, 5, gameStageModel);
-        numberCardsInPlayerHand = 0;
-        availableStlots = new boolean[5];
-        for(int i = 0; i < 5; i++){
-            availableStlots[i] = false;
-        }
     }
 
-    public Card removeCardFromPlayerHand(Card card, int numberCardPlayed){
+    public void removeCardFromPlayerHand(Card card){
         removeElement(card);
-        availableStlots[numberCardPlayed] = true;
-        numberCardsInPlayerHand--;
-        return card;
+        card.setVisible(false);
     }
 
-    public void addCardToPlayerHand(Card card) {
-        for(int i = 0; i < 5; i++){
-            if(availableStlots[i]){
-                addElement(card, 0, i); // Ajoute la carte à la main
-                System.out.println(card);
-                break;
-            }
-        }
+    public void addCardToPlayerHand(Card card, int index) {
+        addElement(card, 0, index); // Ajoute la carte à la main
+        card.setVisible(true);
     }
 
-    public int getIndexAvailableSpace(){
-        for(int i = 0; i < 5; i++){
-            if(availableStlots[i]){
-                numberCardsInPlayerHand++;
-                return i;
-            }
-        }
-        return -1;
-    }
 
-    public boolean canDrawCard(){
-        return numberCardsInPlayerHand < 5;
-    }
-
-    /*
-    public List<Integer> getFreeCardSlots() {
+    public List<Integer> getFreeCardSlots(PlayerCardHand playerCardHand) {
+        this.container = playerCardHand;
         List<Integer> freeSlots = new ArrayList<>();
-        for (int i = 0; i < sta; i++) {
-            if (getElementAt(0, i) == null) {
+        for (int i = 0; i < 5; i++) {
+            if (container.getElement(0, i) == null) {
                 freeSlots.add(i);
             }
         }
         return freeSlots;
     }
-    */
 }

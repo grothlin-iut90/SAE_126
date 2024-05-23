@@ -6,7 +6,6 @@ import boardifier.control.Logger;
 import boardifier.view.ClassicBoardLook;
 
 import boardifier.view.TextLook;
-import model.CardDeck;
 import model.RDRStageModel;
 
 public class RDRStageView extends GameStageView {
@@ -16,14 +15,13 @@ public class RDRStageView extends GameStageView {
 
     public void createLooks(){
         RDRStageModel model = (RDRStageModel)gameStageModel;
-
         addLook(new TextLook(model.getPlayerName(0)));
         addLook(new TextLook(model.getPlayerName(1)));
-
 
         // create a ClassicBoardLook (with borders and coordinates) for the main board.
         addLook(new ClassicBoardLook(2, 4, model.getBoard(), 1, 1, true));
 
+        addLook(new PawnLook(model.getKingPawn()));
 
         // create looks for both pots
         addLook(new BluePawnPotLook(model.getBluePot()));
@@ -33,8 +31,6 @@ public class RDRStageView extends GameStageView {
             addLook(new PawnLook(model.getBluePawns()[i]));
             addLook(new PawnLook(model.getRedPawns()[i]));
         }
-
-        addLook(new PawnLook(model.getKingPawn()));
 
         addLook(new BlueHeroCardPotLook(model.getblueHeroPot()));
         addLook(new RedHeroCardPotLook(model.getRedHeroPot()));
@@ -46,6 +42,10 @@ public class RDRStageView extends GameStageView {
         // create look for CardDeck
         addLook(new CardDeckLook(model.getCardDeck()));
 
+        for(int i = 0; i < model.getDeck().size(); i++){
+            addLook(new CardLook(model.getDeck().get(i)));
+        }
+
         addLook(new PlayerCardHandLook(model.getPlayerCardHand(0)));
         addLook(new PlayerCardHandLook(model.getPlayerCardHand(1)));
 
@@ -54,11 +54,6 @@ public class RDRStageView extends GameStageView {
             addLook(new CardLook(model.getCards(1)[i]));
         }
 
-        CardDeck deck = model.getCardDeck();
-        for(int i = 0; i < 14; i++){
-            addLook(new CardLook(deck.getCards().get(i)));
-            System.out.println("look created");
-        }
         /*
         addLook(new TextLook(model.getBluePawnsRemaining()));
         System.out.println("nbr bleu:"+ model.getBluePawnsRemaining());

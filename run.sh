@@ -1,0 +1,1 @@
+java -cp out/production/RoiDesRoses-Elena_Gael_Maiken_Matteo RDRConsole
